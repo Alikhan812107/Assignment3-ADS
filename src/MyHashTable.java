@@ -1,12 +1,24 @@
-import java.util.Objects; // Import for Objects.equals()
+import java.util.Objects;
 
 public class MyHashTable<K, V> {
 
+    //  A generic hash table implementation using separate chaining to handle collisions.
+    //
+    //  Provides key-value storage with O(1) average-case time complexity for
+    //  insertion, retrieval, and deletion.
+    //
+    //  Supports dynamic resizing to maintain
+    //  performance as the number of elements grows.
+    //
+    //  Type Parameters:
+    //      K: The type of keys.  Must be non-null.
+    //      V: The type of values.
+
     private static final int DEFAULT_CAPACITY = 11;
-    private static final double DEFAULT_LOAD_FACTOR = 0.75; // Load factor to trigger resizing
+    private static final double DEFAULT_LOAD_FACTOR = 0.75;
     private Node<K, V>[] chainArray;
     private int size;
-    private int capacity; // Store the current capacity
+    private int capacity;
 
     private static class Node<K, V> {
         K key;
@@ -43,7 +55,7 @@ public class MyHashTable<K, V> {
             return 0;
         }
         int hashCode = key.hashCode();
-        return Math.abs(hashCode) % capacity; // Use capacity here
+        return Math.abs(hashCode) % capacity;
     }
 
     public void put(K key, V value) {
@@ -71,7 +83,7 @@ public class MyHashTable<K, V> {
         }
         size++;
 
-        // Check if resizing is needed
+        // Here I have checking if resizing is needed
         if ((double) size / capacity > DEFAULT_LOAD_FACTOR) {
             resize();
         }
@@ -114,14 +126,14 @@ public class MyHashTable<K, V> {
             previous = current;
             current = current.next;
         }
-        // Key not found, no need to do anything
+
     }
 
     public boolean contains(V value) {
         for (Node<K, V> head : chainArray) {
             Node<K, V> current = head;
             while (current != null) {
-                if (Objects.equals(current.value, value)) { // Use Objects.equals() for null-safe comparison
+                if (Objects.equals(current.value, value)) {
                     return true;
                 }
                 current = current.next;
@@ -134,7 +146,7 @@ public class MyHashTable<K, V> {
         for (Node<K, V> head : chainArray) {
             Node<K, V> current = head;
             while (current != null) {
-                if (Objects.equals(current.value, value)) {  // Use Objects.equals()
+                if (Objects.equals(current.value, value)) {
                     return current.key;
                 }
                 current = current.next;
@@ -148,25 +160,25 @@ public class MyHashTable<K, V> {
     }
 
     private void resize() {
-        int newCapacity = capacity * 2; // Double the capacity
+        int newCapacity = capacity * 2;
         Node<K, V>[] newChainArray = new Node[newCapacity];
-        capacity = newCapacity; // Update the capacity
+        capacity = newCapacity;
 
-        // Rehash all existing key-value pairs to the new array
+
         for (Node<K, V> head : chainArray) {
             Node<K, V> current = head;
             while (current != null) {
-                int newIndex = hash(current.key); // Use the new capacity
-                Node<K, V> next = current.next; // Store next to avoid losing it
-                current.next = newChainArray[newIndex]; // Insert at the head of the new list
+                int newIndex = hash(current.key);
+                Node<K, V> next = current.next;
+                current.next = newChainArray[newIndex];
                 newChainArray[newIndex] = current;
                 current = next;
             }
         }
-        chainArray = newChainArray; // Replace the old array
+        chainArray = newChainArray;
     }
 
-    public void printTable() { //added for testing
+    public void printTable() {
         System.out.println("MyHashTable contents:");
         for (int i = 0; i < capacity; i++) {
             System.out.print("Bucket " + i + ": ");
