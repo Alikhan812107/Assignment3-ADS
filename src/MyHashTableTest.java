@@ -16,6 +16,7 @@ public class MyHashTableTest {
             Student value = new Student(randomStudentId, randomMajor);
 
             table.put(key, value);
+
         }
 
         System.out.println("Initial distribution:");
